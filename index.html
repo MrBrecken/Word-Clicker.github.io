@@ -1,0 +1,203 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Click The Button For a New Word</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #ec4899 50%, #fb923c 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 2rem;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .word-display {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            min-height: 128px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .word-text {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .button-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        button {
+            background: white;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.5rem;
+            padding: 1.5rem 3rem;
+            border: none;
+            border-radius: 9999px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        button:hover {
+            background: #f9fafb;
+            transform: scale(1.05);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .icon {
+            width: 32px;
+            height: 32px;
+        }
+
+        .sound-note {
+            margin-top: 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 640px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .word-text {
+                font-size: 1.75rem;
+            }
+
+            button {
+                font-size: 1.25rem;
+                padding: 1.25rem 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Click The Button For a New Word</h1>
+        <p class="subtitle">Press the button for random word!</p>
+
+        <div class="word-display">
+            <p class="word-text" id="wordText">Click the button!</p>
+        </div>
+
+        <div class="button-container">
+            <button id="getWordBtn" onclick="getRandomWord()">
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                    <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                </svg>
+                <span id="btnText">Get Random Word</span>
+            </button>
+        </div>
+
+        <p class="sound-note">🔊 Make sure your sound is on!</p>
+    </div>
+
+    <script>
+        const urbanWords = [
+            'Sam', 'Faggot', 'Jaxon', 'EBT', 'diddy', 'jaxon is a retard', 'stroking my dong', 'nigga',
+            'vibe', 'lowkey', 'highkey', 'stan', 'tea', 'shade', 'clout', 'fire',
+            'goat', 'bet', 'mood', 'slay', 'cringe', 'based', 'simp', 'karen',
+            'boomer', 'zoomer', 'cheugy', 'bussin', 'drip', 'rizz', 'mid', 'W',
+            'L', 'ratio', 'fam', 'bruh', 'yeet', 'oof', 'period', 'snatched',
+            'extra', 'basic', 'savage', 'woke', 'cancelled', 'ship', 'spill the tea',
+            'on fleek', 'thicc', 'shook', 'blessed', 'adulting', 'hangry', 'bae',
+            'squad', 'goals', 'vibing', 'hits different', 'rent free', 'main character',
+            'gaslight', 'gatekeep', 'girlboss', 'delulu', 'demure', 'understood the assignment',
+            'living rent free', 'say less', 'its giving', 'ate and left no crumbs',
+            'serving', 'mother', 'icon', 'legend', 'deadass', 'facts', 'fr fr',
+            'bussin bussin', 'sheesh', 'smol', 'chonky', 'doggo', 'pupper', 'hooman',
+            'heckin', 'valid', 'unhinged', 'feral', 'unserious', 'goofy', 'zesty', 'Nigger', 'Nigger', 'Nigger', 'Nigger', 'Nigger', 'Nigger', 'Nigger', 'Nigger'
+        ];
+
+        function speakWord(word) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                
+                const utterance = new SpeechSynthesisUtterance(word);
+                utterance.rate = 0.9;
+                utterance.pitch = 1;
+                utterance.volume = 1;
+                
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function getRandomWord() {
+            const btn = document.getElementById('getWordBtn');
+            const btnText = document.getElementById('btnText');
+            const wordText = document.getElementById('wordText');
+            
+            btn.disabled = true;
+            btnText.textContent = 'Loading...';
+            
+            setTimeout(() => {
+                const randomWord = urbanWords[Math.floor(Math.random() * urbanWords.length)];
+                wordText.textContent = randomWord;
+                speakWord(randomWord);
+                
+                btn.disabled = false;
+                btnText.textContent = 'Get Random Word';
+            }, 200);
+        }
+    </script>
+</body>
+</html>
